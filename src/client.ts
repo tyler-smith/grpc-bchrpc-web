@@ -22,6 +22,15 @@ export class GrpcClient {
         });
     }
 
+    getAvalancheInfo(): Promise<bchrpc.GetAvalancheInfoResponse> {
+        return new Promise((resolve, reject) => {
+            this.client.getAvalancheInfo(new bchrpc.GetAvalancheInfoRequest(), (err, data) => {
+                if (err !== null) reject(err);
+                else resolve(data!);
+            });
+        });
+    }
+
     getRawTransaction({ hash, reverseOrder }: { hash: string; reverseOrder?: boolean; }): Promise<bchrpc.GetRawTransactionResponse> {
         let req = new bchrpc.GetRawTransactionRequest();
         if(reverseOrder)
@@ -103,4 +112,11 @@ export class GrpcClient {
         return this.client.subscribeTransactions(new bchrpc.SubscribeTransactionsRequest);
     }
 
+    subscribeAvalanchePeers(): bchrpc_pb_service.ResponseStream<bchrpc.AvalanchePeerNotification> {
+        return this.client.subscribeAvalanchePeers(new bchrpc.SubscribeAvalanchePeersRequest());
+    }
+
+    subscribeAvalancheFinalizations(): bchrpc_pb_service.ResponseStream<bchrpc.AvalancheFinalizationNotification> {
+        return this.client.subscribeAvalancheFinalizations(new bchrpc.SubscribeAvalancheFinalizationsRequest());
+    }
 }
